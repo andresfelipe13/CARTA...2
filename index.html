@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Para ti, mi amor</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,700;1,9..144,400&family=Karla:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --brasa:#2b0c0b; --carbon:#4a1511; --llama:#ff6a1a; --oro:#ffc15a; --ceniza:#f6e6d6;
+}
+*{box-sizing:border-box;margin:0}
+html,body{height:100%}
+body{
+  background:radial-gradient(120% 90% at 50% 110%, var(--carbon) 0%, var(--brasa) 60%);
+  color:var(--ceniza); font-family:"Karla",system-ui,sans-serif;
+  display:flex; align-items:center; justify-content:center;
+  padding:24px; overflow-x:hidden; position:relative;
+}
+/* Fuego: el momento memorable */
+.fuego{position:fixed;left:0;right:0;bottom:0;height:42vh;pointer-events:none;
+  background:
+    radial-gradient(40% 70% at 20% 100%, rgba(255,106,26,.55), transparent 70%),
+    radial-gradient(35% 90% at 50% 100%, rgba(255,193,90,.5), transparent 70%),
+    radial-gradient(40% 75% at 80% 100%, rgba(255,106,26,.55), transparent 70%);
+  filter:blur(14px); transform-origin:bottom; animation:arde 3.2s ease-in-out infinite alternate;}
+.fuego.b{animation-duration:2.3s;animation-delay:-1s;opacity:.7;height:30vh}
+@keyframes arde{
+  0%{transform:scaleY(.85) scaleX(1)}
+  50%{transform:scaleY(1.05) scaleX(.97)}
+  100%{transform:scaleY(.92) scaleX(1.03)}
+}
+main{position:relative;z-index:1;width:min(560px,100%);text-align:center}
+#portada h1,#carta h1{font-family:"Fraunces",serif;font-weight:700;line-height:1.05;
+  font-size:clamp(2.6rem,10vw,4.4rem);color:var(--oro);letter-spacing:-.01em}
+#portada p{margin:18px 0 32px;font-size:1.1rem;opacity:.85}
+button,label.btn{font:600 1rem "Karla",sans-serif;background:var(--llama);color:#2b0c0b;
+  border:0;border-radius:999px;padding:14px 30px;cursor:pointer;display:inline-block;
+  transition:transform .15s, background .15s}
+button:hover,label.btn:hover{background:var(--oro);transform:scale(1.04)}
+:focus-visible{outline:3px solid var(--oro);outline-offset:3px}
+#carta{display:none;text-align:left;background:rgba(43,12,11,.72);
+  border:1px solid rgba(255,193,90,.35);border-radius:20px;padding:clamp(24px,6vw,44px);
+  backdrop-filter:blur(6px);animation:entra 1.2s ease both}
+@keyframes entra{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
+#carta h1{font-size:clamp(2rem,7vw,3rem);margin-bottom:20px}
+#carta p{font-family:"Fraunces",serif;font-size:1.15rem;line-height:1.75;margin-bottom:16px}
+#carta .firma{font-style:italic;color:var(--oro);margin-top:24px;margin-bottom:0}
+.musica{margin-top:26px;font-size:.9rem;display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+.musica button{padding:8px 18px;font-size:.9rem}
+.aviso{display:none;margin-top:14px;font-size:.9rem;opacity:.85}
+@media (prefers-reduced-motion:reduce){.fuego,#carta{animation:none}}
+</style>
+</head>
+<body>
+<div class="fuego"></div><div class="fuego b"></div>
+
+<audio id="audio" src=" musica/cancion.mp3" loop preload="auto"></audio>
+
+<main>
+  <section id="portada">
+    <h1>Tengo algo para ti</h1>
+    <p>Sube el volumen y ábrelo.</p>
+    <button id="abrir">Abrir mi carta</button>
+  </section>
+
+  <article id="carta">
+    <h1>Feliz día, VALE AMOR</h1>
+    <p>Eres la mujer que enciende todo a mi alrededor: mis días, mis ganas y hasta mis ideas más locas.</p>
+    <p>Gracias por tu risa, por tu paciencia y por hacerme sentir en casa. Contigo todo se siente más vivo.</p>
+    <p>Hoy solo quería decirte que te quiero, y que ojalá todos los días sean tan especiales como tú.</p>
+    <p class="firma">Con todo mi cariño, TU AMOR</p>
+
+    <div class="musica">
+      <button id="pausa" type="button">Pausar música</button>
+    </div>
+    <p class="aviso" id="aviso">No encuentro la canción. Elige el archivo MP3:
+      <label class="btn" for="archivo" style="padding:8px 18px;font-size:.9rem">Elegir canción</label>
+      <input id="archivo" type="file" accept="audio/*" hidden>
+    </p>
+  </article>
+</main>
+
+<script>
+const audio = document.getElementById('audio');
+const aviso = document.getElementById('aviso');
+const pausa = document.getElementById('pausa');
+
+function sonar(){ audio.play().catch(()=>{ aviso.style.display='block'; }); }
+audio.addEventListener('error', ()=>{ aviso.style.display='block'; });
+
+function mostrarCarta(){
+  document.getElementById('portada').style.display='none';
+  document.getElementById('carta').style.display='block';
+}
+
+// La música empieza justo al pulsar "Abrir mi carta"
+document.getElementById('abrir').addEventListener('click', ()=>{
+  audio.play().catch(()=>{ aviso.style.display='block'; });
+  mostrarCarta();
+});
+
+pausa.addEventListener('click', ()=>{
+  if(audio.paused){ audio.play(); pausa.textContent='Pausar música'; }
+  else { audio.pause(); pausa.textContent='Reanudar música'; }
+});
+
+document.getElementById('archivo').addEventListener('change', e=>{
+  const f = e.target.files[0];
+  if(!f) return;
+  audio.src = URL.createObjectURL(f);
+  aviso.style.display='none';
+  sonar();
+});
+</script>
+</body>
+</html>
